@@ -9,16 +9,16 @@ import (
 )
 
 type Server struct {
-	proxyServer *net.TCPAddr
-	ln          net.Listener
+	mailserver *net.TCPAddr
+	ln         net.Listener
 }
 
-func New(proxyAddress string) (*Server, error) {
-	addr, err := net.ResolveTCPAddr("tcp", proxyAddress)
+func New(mailserver string) (*Server, error) {
+	addr, err := net.ResolveTCPAddr("tcp", mailserver)
 	if err != nil {
 		return nil, err
 	}
-	return &Server{proxyServer: addr}, nil
+	return &Server{mailserver: addr}, nil
 }
 
 func (s *Server) Start() {
@@ -44,7 +44,7 @@ func (s *Server) listen() {
 			continue
 		}
 		go func() {
-			clientConn, err := net.DialTCP("tcp", nil, s.proxyServer)
+			clientConn, err := net.DialTCP("tcp", nil, s.mailserver)
 			defer clientConn.Close()
 			if err != nil {
 				fmt.Println("error: ", err)
