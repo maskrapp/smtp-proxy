@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net"
+
+	"github.com/pires/go-proxyproto"
 )
 
 type Server struct {
@@ -46,6 +48,11 @@ func (s *Server) listen() {
 			defer clientConn.Close()
 			if err != nil {
 				fmt.Println("error: ", err)
+				return
+			}
+			header := proxyproto.HeaderProxyFromAddrs(1, connection.RemoteAddr(), clientConn.RemoteAddr())
+			if _, err := header.WriteTo(clientConn); err != nil {
+				fmt.Println("proxy protocol error: ", err)
 				return
 			}
 			s.startProxy(clientConn, connection)
