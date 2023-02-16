@@ -37,12 +37,12 @@ func (s *Server) Shutdown() error {
 func (s *Server) listen() {
 	for {
 		c, err := s.ln.Accept()
-		connection := c.(*net.TCPConn)
-		defer connection.Close()
 		if err != nil {
 			fmt.Println("error: ", err)
 			continue
 		}
+		connection := c.(*net.TCPConn)
+		defer connection.Close()
 		go func() {
 			clientConn, err := net.DialTCP("tcp", nil, s.mailserver)
 			defer clientConn.Close()
