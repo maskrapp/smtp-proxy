@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"time"
 
 	"github.com/pires/go-proxyproto"
 )
@@ -42,6 +43,7 @@ func (s *Server) listen() {
 			continue
 		}
 		connection := c.(*net.TCPConn)
+		connection.SetDeadline(time.Now().Add(2 * time.Minute))
 		defer connection.Close()
 		go func() {
 			clientConn, err := net.DialTCP("tcp", nil, s.mailserver)
